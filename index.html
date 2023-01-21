@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class List {
+            static DEFAULT_STATUS = 'to do';
+            static NEW_STATUS = 'done';
+            constructor() {
+                this.list = [];
+            }
+
+            create(task, info) {
+                const index = this.#searchByIndex(this.list, task);
+                if (index !== -1) return;
+                const newTask = {
+                    task: task,
+                    status: List.DEFAULT_STATUS,
+                    info: info
+                };
+                this.list.push(newTask);
+            }
+
+            remove(task) {
+                const index = this.#searchByIndex(this.list, task);
+                if (index === -1) return;
+                const acces = this.#confirmChanges();
+                if (!acces) return;
+                this.list.splice(index, 1);
+            }
+
+            getInfo() {
+                const taskCounter = {
+                    all: this.list.length,
+                    done: 0,
+                    toDo: 0
+                };
+                this.list.forEach(el => {
+                    if (el.status === List.DEFAULT_STATUS) {
+                        taskCounter.toDo += 1;
+                    } else taskCounter.done += 1;
+                });
+                return taskCounter;
+            }
+
+
+            changeInfo(task, newInfo) {
+                const index = this.#searchByIndex(this.list, task);
+                if (index === -1) return;
+                const acces = this.#confirmChanges();
+                if (!acces) return;
+                this.list[index].info = newInfo;
+
+            }
+
+            changeStatus(task) {
+                const index = this.#searchByIndex(this.list, task);
+                if (index === -1) return;
+                const acces = this.#confirmChanges();
+                if (!acces) return;
+                if (this.list[index].status === List.DEFAULT_STATUS) {
+                    this.list[index].status = List.NEW_STATUS;
+                } else this.list[index].status = List.DEFAULT_STATUS;
+            }
+
+            #confirmChanges() {
+                return confirm('Do you want to save changes?');
+            }
+
+            #searchByIndex(arr, task) {
+                return arr.findIndex(el => el.task === task)
+            }
+
+
+        }
+
+        const toDo = new List();
+
+        toDo.create('Food', 'need to nuy some food');
+        toDo.create('Food', 'need to nuy some food');
+        toDo.create('food', 'Need to buy some food');
+        toDo.create('Meeting', 'Meeting with Fred in the park');
+        toDo.create('Remember', 'call boss at 5 pm ');
+        toDo.create('Diner', 'order pizza');
+        toDo.changeStatus('Diner');
+        toDo.changeStatus('Diner');
+        toDo.changeInfo('Meeting', 'meeting will be tomorrow')
+        toDo.remove("food")
+
+        console.log(toDo.getInfo());;
+
+        console.log(toDo);
+
+    </script>
+</body>
+
+</html>
